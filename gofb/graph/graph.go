@@ -1,6 +1,7 @@
 package graph
 
 import (
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -11,43 +12,37 @@ const (
 )
 
 type Grapher interface {
-	Query() string
+	Query(accessToken string)
 }
 
 type Graph struct {
-	baseUrl string
+	baseUrl               string
+	accessToken           string
+	Id, Name, Username    string
+	First_name, Last_name string
+	Gender                string
 }
 
-func NewGraph(uid string) (graph *Graph) {
-	baseUrl = fmt.Sprintf(BASE_GRAPH_URL, uid)
-	graph := &Graph{baseUrl}
+func NewGraph(uid, accessToken string) (graph *Graph) {
+	baseUrl := fmt.Sprintf(BASE_GRAPH_URL, uid)
+	graph = &Graph{baseUrl: baseUrl, accessToken: accessToken}
+	graph.Query()
 	return
 }
 
-func NewMe() (graph *Graph) {
-	baseUrl = fmt.Sprintf(BASE_GRAPH_URL, "me")
-	graph := &Graph{baseUrl}
-	return
-}
+func (g *Graph) Query() {
+	var url string
+	if "" != g.accessToken {
+		url = "?access_token=" + g.accessToken
+	}
 
-func (g *Graph) Init() bool {
-	//	url := "https://graph.facebook.com/me?access_token=%v"
-	//	url = fmt.Sprintf(url, fb.Token)
-	//	resp, _ := http.Get(url)
-	//	defer resp.Body.Close()
-	//	body, _ := ioutil.ReadAll(resp.Body)
-	//	fmt.Println(string(body))
-	return true
-}
-
-func (g *Graph) Query() string {
-	return ""
-}
-
-func (g *Graph) RawJson(url string) string {
+	url = g.baseUrl + url
+	fmt.Println(url)
 	resp, _ := http.Get(url)
 	defer resp.Body.Close()
 	body, _ := ioutil.ReadAll(resp.Body)
-	jsonData := string(body)
-	return jsonData
+
+	err := json.Unmarshal(body, g)
+	fmt.Println(err)
+	fmt.Println(*g)
 }

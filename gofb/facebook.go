@@ -1,6 +1,7 @@
 package gofb
 
 import (
+	"./graph"
 	"bytes"
 	"encoding/json"
 	"io/ioutil"
@@ -14,6 +15,9 @@ const (
 type Facebook struct {
 	AppID string
 	accessInfo
+
+	graph   *graph.Graph
+	friends *graph.Friends
 }
 
 type accessInfo struct {
@@ -39,6 +43,8 @@ func (fb *Facebook) Init(params map[string]string) bool {
 	fb.Token = params["access_token"]
 	fb.Expires = params["expires"]
 	fb.initialized = true
+	fb.graph = graph.NewGraph("me", fb.Token)
+	fb.friends = graph.NewFriends("me", fb.Token)
 	return true
 }
 
@@ -47,7 +53,7 @@ func (fb *Facebook) IsValidSession() bool {
 }
 
 func (fb *Facebook) Initialized() bool {
-  return fb.initialized
+	return fb.initialized
 }
 
 func (fb *Facebook) AccessToken() string {
