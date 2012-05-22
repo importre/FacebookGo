@@ -1,0 +1,6 @@
+{
+	"RedirectURI": "http://127.0.0.1:8080/auth/",
+	"ClientID": "295362970552833",
+	"ClientSecret": "9752635279a076efc9cc31c11a138f1e",
+	"StateValue": "HelloFacebookGo"
+}

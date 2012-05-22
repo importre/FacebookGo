@@ -1,4 +1,4 @@
-package gofb
+package server
 
 import (
 	"fmt"
@@ -12,10 +12,12 @@ type Initializer interface {
 	Init(map[string]string) bool
 }
 
-var (
+const (
 	DIALOG_BASE_URL  = "https://www.facebook.com/dialog/oauth?"
 	ACCESS_TOKEN_URL = "https://graph.facebook.com/oauth/access_token?"
+)
 
+var (
 	SERVER_URI    = "http://127.0.0.1"
 	REDIRECT_URI  = SERVER_URI + ":%v/auth/"
 	CLIENT_ID     = "295362970552833"
