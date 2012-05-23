@@ -43,5 +43,4 @@ func (g *Graph) Query() {
 
 	err := json.Unmarshal(body, g)
 	fmt.Println(err)
-	//fmt.Println(*g)
 }

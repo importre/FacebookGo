@@ -4,6 +4,7 @@ import (
 	"../../gofb/graph"
 	"encoding/json"
 	"fmt"
+	"html/template"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -24,12 +25,14 @@ type Info struct {
 }
 
 const (
-	DIALOG_BASE_URL  = "https://www.facebook.com/dialog/oauth?"
-	ACCESS_TOKEN_URL = "https://graph.facebook.com/oauth/access_token?"
-	INFO_FILE        = "info.json"
-	AUTH_PATH        = "/auth/"
-	USER_PATH        = "/user/"
-	FRIENDS_PATH     = "/friends/"
+	DIALOG_BASE_URL   = "https://www.facebook.com/dialog/oauth?"
+	ACCESS_TOKEN_URL  = "https://graph.facebook.com/oauth/access_token?"
+	INFO_FILE         = "info.json"
+	USER_TMPL_FILE    = "user.html"
+	FRIENDS_TMPL_FILE = "friends.html"
+	AUTH_PATH         = "/auth/"
+	USER_PATH         = "/user/"
+	FRIENDS_PATH      = "/friends/"
 )
 
 var (
@@ -75,15 +78,15 @@ func Run(port uint, init Initializer) {
 }
 
 func FriendsHandler(w http.ResponseWriter, r *http.Request) {
-  for _, friend := range initializer.Friends().Data {
-    fmt.Fprintln(w, friend.Id+ "\t" + friend.Name)
-  }
+	t := template.New(FRIENDS_TMPL_FILE)
+	t, _ = t.ParseFiles(FRIENDS_TMPL_FILE)
+	t.Execute(w, initializer.Friends().Data)
 }
 
 func UserHandler(w http.ResponseWriter, r *http.Request) {
-  fmt.Fprintln(w, initializer.Graph().Id)
-  fmt.Fprintln(w, initializer.Graph().Name)
-  fmt.Fprintln(w, initializer.Graph().Gender)
+	t := template.New(USER_TMPL_FILE)
+	t, _ = t.ParseFiles(USER_TMPL_FILE)
+	t.Execute(w, initializer.Graph())
 }
 
 func AuthHandler(w http.ResponseWriter, r *http.Request) {
@@ -91,7 +94,6 @@ func AuthHandler(w http.ResponseWriter, r *http.Request) {
 	state, code := params.Get("state"), params.Get("code")
 
 	if info.StateValue != state || "" == code {
-		// error
 		log.Println(1)
 		return
 	}
@@ -99,7 +101,6 @@ func AuthHandler(w http.ResponseWriter, r *http.Request) {
 	redirectUrl := accessTokenUrl(code)
 	resp, err := http.Get(redirectUrl)
 	if nil != err {
-		// error
 		log.Println(err)
 		return
 	}
@@ -107,14 +108,12 @@ func AuthHandler(w http.ResponseWriter, r *http.Request) {
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
 	if nil != err {
-		// error
 		log.Println(err)
 		return
 	}
 
 	params, err = url.ParseQuery(string(body))
 	if nil != err {
-		// error
 		log.Println(err)
 		return
 	}
@@ -122,7 +121,6 @@ func AuthHandler(w http.ResponseWriter, r *http.Request) {
 	accessToken := params.Get("access_token")
 	expires := params.Get("expires")
 	if "" == accessToken || "" == expires {
-		// error
 		log.Println(2)
 		return
 	}

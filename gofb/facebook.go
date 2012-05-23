@@ -67,11 +67,11 @@ func (fb *Facebook) AccessExpires() string {
 }
 
 func (fb *Facebook) Graph() *graph.Graph {
-  return fb.graph
+	return fb.graph
 }
 
 func (fb *Facebook) Friends() *graph.Friends {
-  return fb.friends
+	return fb.friends
 }
 
 func (fb *Facebook) DumpAccessInfo() {

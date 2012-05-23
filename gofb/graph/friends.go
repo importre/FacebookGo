@@ -1,8 +1,8 @@
 package graph
 
 import (
-	"fmt"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 )
@@ -14,7 +14,7 @@ type Friend struct {
 type Friends struct {
 	baseUrl     string
 	accessToken string
-	Data []Friend
+	Data        []Friend
 }
 
 func NewFriends(uid, accessToken string) (friends *Friends) {
@@ -37,7 +37,4 @@ func (f *Friends) Query() {
 
 	err := json.Unmarshal(body, f)
 	fmt.Println(err)
-	//for i, j := range(f.Data) {
-	//	fmt.Println(i, j)
-	//}
 }
