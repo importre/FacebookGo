@@ -1,6 +1,7 @@
 package server
 
 import (
+	"../../gofb/graph"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -11,6 +12,8 @@ import (
 
 type Initializer interface {
 	Init(map[string]string) bool
+	Graph() *graph.Graph
+	Friends() *graph.Friends
 }
 
 type Info struct {
@@ -25,6 +28,8 @@ const (
 	ACCESS_TOKEN_URL = "https://graph.facebook.com/oauth/access_token?"
 	INFO_FILE        = "info.json"
 	AUTH_PATH        = "/auth/"
+	USER_PATH        = "/user/"
+	FRIENDS_PATH     = "/friends/"
 )
 
 var (
@@ -36,6 +41,8 @@ var (
 func init() {
 	http.Handle("/", http.HandlerFunc(MainHandler))
 	http.Handle(AUTH_PATH, http.HandlerFunc(AuthHandler))
+	http.Handle(USER_PATH, http.HandlerFunc(UserHandler))
+	http.Handle(FRIENDS_PATH, http.HandlerFunc(FriendsHandler))
 }
 
 func InitInfo() *Info {
@@ -50,11 +57,13 @@ func InitInfo() *Info {
 		log.Fatal(err)
 	}
 
-	redirectUri = info.ServerURI + ":%v" + AUTH_PATH
+	info.ServerURI += ":%v"
+	redirectUri = info.ServerURI + AUTH_PATH
 	return info
 }
 
 func Run(port uint, init Initializer) {
+	info.ServerURI = fmt.Sprintf(info.ServerURI, port)
 	redirectUri = fmt.Sprintf(redirectUri, port)
 	initializer = init
 
@@ -63,6 +72,18 @@ func Run(port uint, init Initializer) {
 	if nil != err {
 		log.Fatal("ListenAndServe:", err)
 	}
+}
+
+func FriendsHandler(w http.ResponseWriter, r *http.Request) {
+  for _, friend := range initializer.Friends().Data {
+    fmt.Fprintln(w, friend.Id+ "\t" + friend.Name)
+  }
+}
+
+func UserHandler(w http.ResponseWriter, r *http.Request) {
+  fmt.Fprintln(w, initializer.Graph().Id)
+  fmt.Fprintln(w, initializer.Graph().Name)
+  fmt.Fprintln(w, initializer.Graph().Gender)
 }
 
 func AuthHandler(w http.ResponseWriter, r *http.Request) {
@@ -112,6 +133,7 @@ func AuthHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	initializer.Init(initParams)
+	http.Redirect(w, r, USER_PATH, http.StatusMovedPermanently)
 }
 
 func MainHandler(w http.ResponseWriter, r *http.Request) {

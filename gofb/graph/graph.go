@@ -37,12 +37,11 @@ func (g *Graph) Query() {
 	}
 
 	url = g.baseUrl + url
-	fmt.Println(url)
 	resp, _ := http.Get(url)
 	defer resp.Body.Close()
 	body, _ := ioutil.ReadAll(resp.Body)
 
 	err := json.Unmarshal(body, g)
 	fmt.Println(err)
-	fmt.Println(*g)
+	//fmt.Println(*g)
 }

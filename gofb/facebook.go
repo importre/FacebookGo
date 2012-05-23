@@ -40,11 +40,13 @@ func NewFacebook(appid string) *Facebook {
 }
 
 func (fb *Facebook) Init(params map[string]string) bool {
-	fb.Token = params["access_token"]
-	fb.Expires = params["expires"]
-	fb.initialized = true
-	fb.graph = graph.NewGraph("me", fb.Token)
-	fb.friends = graph.NewFriends("me", fb.Token)
+	if !fb.initialized {
+		fb.Token = params["access_token"]
+		fb.Expires = params["expires"]
+		fb.graph = graph.NewGraph("me", fb.Token)
+		fb.friends = graph.NewFriends("me", fb.Token)
+		fb.initialized = true
+	}
 	return true
 }
 
@@ -62,6 +64,14 @@ func (fb *Facebook) AccessToken() string {
 
 func (fb *Facebook) AccessExpires() string {
 	return fb.Expires
+}
+
+func (fb *Facebook) Graph() *graph.Graph {
+  return fb.graph
+}
+
+func (fb *Facebook) Friends() *graph.Friends {
+  return fb.friends
 }
 
 func (fb *Facebook) DumpAccessInfo() {

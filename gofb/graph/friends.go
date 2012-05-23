@@ -31,14 +31,13 @@ func (f *Friends) Query() {
 	}
 
 	url = f.baseUrl + url
-	fmt.Println(url)
 	resp, _ := http.Get(url)
 	defer resp.Body.Close()
 	body, _ := ioutil.ReadAll(resp.Body)
 
 	err := json.Unmarshal(body, f)
 	fmt.Println(err)
-	for i, j := range(f.Data) {
-		fmt.Println(i, j)
-	}
+	//for i, j := range(f.Data) {
+	//	fmt.Println(i, j)
+	//}
 }
