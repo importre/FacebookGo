@@ -1,0 +1,42 @@
+#main{
+  width:900px;
+  margin:0 auto;
+  position:relative;
+}
+
+article{
+  margin:3em 0;
+  padding:20px;
+}
+
+nav ul li{
+  display:inline;
+}
+
+.line{
+  height:1px;
+  background-color:#24404c;
+  border-bottom:1px solid #416371;
+  margin:1em 0;
+  overflow:hidden;
+}
+
+h1{
+  font-size:1.5em;
+  padding:0.5em 0 0;
+}
+
+h2{
+  font-size:1.0em;
+  padding:0.5em 0 0;
+}
+
+a, a:visited {
+	color:#0196e3;
+	text-decoration:none;
+	outline:none;
+}
+
+a:hover{
+	text-decoration:underline;
+}

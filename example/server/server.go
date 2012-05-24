@@ -33,6 +33,7 @@ const (
 	AUTH_PATH         = "/auth/"
 	USER_PATH         = "/user/"
 	FRIENDS_PATH      = "/friends/"
+	CSS_PATH          = "/css/"
 )
 
 var (
@@ -46,6 +47,7 @@ func init() {
 	http.Handle(AUTH_PATH, http.HandlerFunc(AuthHandler))
 	http.Handle(USER_PATH, http.HandlerFunc(UserHandler))
 	http.Handle(FRIENDS_PATH, http.HandlerFunc(FriendsHandler))
+	http.Handle(CSS_PATH, http.FileServer(http.Dir(".")))
 }
 
 func InitInfo() *Info {

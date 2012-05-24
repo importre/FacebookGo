@@ -1,26 +1,35 @@
 <!doctype html>
 <html>
-	<head>
-		<meta charset="utf-8"/>
-		<title>FacebookGo Sample</title>
-	</head>
-	<body>
-		<header>
-		</header>
-		<nav>
-		<ul>
-			<li><a href="/user">user</a></li>
-			<li><a href="/friends">friends</a></li>
-		</ul>
-		</nav>
-		<section>
-		<article>
+  <head>
+    <link rel="stylesheet" type="text/css" href="/css/styles.css" />
+    <meta charset="utf-8"/>
+    <title>FacebookGo Sample</title>
+  </head>
+  <body>
+    <section id="main">
+    <header>
+    <hgroup>
+    <h1>FacebookGo Sample</h1>
+    <div class="line"></div>
+    </hgroup>
+    </header>
+    <nav>
+    <ul>
+      <li><a href="/user">User</a></li>
+      <li><a href="/friends">Friends</a></li>
+    </ul>
+    </nav>
+    <section id="articles">
+    <div class="line"></div>
 		<header><h1>Friends</h1></header>
+    <article>
 		{{range .}}<p>{{.Name}}({{.Id}})<p>{{end}}
-		</article>
-		</section>
-		<footer>
-		<small>Copyright ⓒ importre 2012, All Rights Reserved.</small>
-		</footer>
-	</body>
+    </article>
+    </section>
+    <footer>
+    <div class="line"></div>
+    <small>Copyright ⓒ importre 2012, All Rights Reserved.</small>
+    </footer>
+    </section>
+  </body>
 </html>
