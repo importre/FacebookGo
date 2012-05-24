@@ -11,7 +11,7 @@ import (
 	"net/url"
 )
 
-type Initializer interface {
+type Facebooker interface {
 	Init(map[string]string) bool
 	Graph() *graph.Graph
 	Friends() *graph.Friends
@@ -37,7 +37,7 @@ const (
 )
 
 var (
-	initializer Initializer
+	fb          Facebooker
 	info        *Info
 	redirectUri string
 )
@@ -67,10 +67,10 @@ func InitInfo() *Info {
 	return info
 }
 
-func Run(port uint, init Initializer) {
+func Run(port uint, facebook Facebooker) {
 	info.ServerURI = fmt.Sprintf(info.ServerURI, port)
 	redirectUri = fmt.Sprintf(redirectUri, port)
-	initializer = init
+	fb = facebook
 
 	err := http.ListenAndServe(fmt.Sprintf(":%v", port), nil)
 
@@ -82,13 +82,13 @@ func Run(port uint, init Initializer) {
 func FriendsHandler(w http.ResponseWriter, r *http.Request) {
 	t := template.New(FRIENDS_TMPL_FILE)
 	t, _ = t.ParseFiles(FRIENDS_TMPL_FILE)
-	t.Execute(w, initializer.Friends().Data)
+	t.Execute(w, fb.Friends().Data)
 }
 
 func UserHandler(w http.ResponseWriter, r *http.Request) {
 	t := template.New(USER_TMPL_FILE)
 	t, _ = t.ParseFiles(USER_TMPL_FILE)
-	t.Execute(w, initializer.Graph())
+	t.Execute(w, fb.Graph())
 }
 
 func AuthHandler(w http.ResponseWriter, r *http.Request) {
@@ -132,7 +132,7 @@ func AuthHandler(w http.ResponseWriter, r *http.Request) {
 		"expires":      expires,
 	}
 
-	initializer.Init(initParams)
+	fb.Init(initParams)
 	http.Redirect(w, r, USER_PATH, http.StatusMovedPermanently)
 }
 
